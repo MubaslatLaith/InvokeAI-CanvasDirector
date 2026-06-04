@@ -15,7 +15,8 @@ source .venv/bin/activate
 
 cd /workspace/InvokeAI
 
-uv pip install -e ".[dev,test,docs]" --python 3.12 --python-preference only-managed --index=https://download.pytorch.org/whl/cu13 --reinstall
+uv pip install -e ".[dev,test,docs]"   --python /workspace/invokeai/.venv/bin/python --index-url https://pypi.org/simple --extra-index-url https://download.pytorch.org/whl/nightly/cu128 --prerelease allow
+
 
 npm install -g pnpm
 cd ./invokeai/frontend/web
@@ -24,3 +25,10 @@ pnpm build
 
 
 sudo apt update && sudo apt install screen
+
+
+uv pip uninstall torch torchvision torchaudio --python /workspace/invokeai/.venv/bin/python
+
+
+uv pip install --pre torch torchvision torchaudio --python /workspace/invokeai/.venv/bin/python  --index-url https://download.pytorch.org/whl/nightly/cu128
+
