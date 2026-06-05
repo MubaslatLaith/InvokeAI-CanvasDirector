@@ -13,7 +13,7 @@ uv venv --relocatable --prompt invoke --python 3.12 --python-preference only-man
 
 source .venv/bin/activate
 
-cd /workspace/InvokeAI
+cd /workspace/InvokeAI-ContextManager
 
 uv pip install -e ".[dev,test,docs]"   --python /workspace/invokeai/.venv/bin/python --index-url https://pypi.org/simple --extra-index-url https://download.pytorch.org/whl/nightly/cu128 --prerelease allow
 
