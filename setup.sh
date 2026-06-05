@@ -32,3 +32,6 @@ uv pip uninstall torch torchvision torchaudio --python /workspace/invokeai/.venv
 
 uv pip install --pre torch torchvision torchaudio --python /workspace/invokeai/.venv/bin/python  --index-url https://download.pytorch.org/whl/nightly/cu128
 
+cp invokeai.yaml /workspace/invokeai/invokeai.yaml
+
+
