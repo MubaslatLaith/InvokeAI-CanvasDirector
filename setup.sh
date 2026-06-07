@@ -30,7 +30,11 @@ sudo apt update && sudo apt install screen
 uv pip uninstall torch torchvision torchaudio --python /workspace/invokeai/.venv/bin/python
 
 
-uv pip install --pre torch torchvision torchaudio --python /workspace/invokeai/.venv/bin/python  --index-url https://download.pytorch.org/whl/nightly/cu128
+#uv pip install --pre torch torchvision torchaudio --python /workspace/invokeai/.venv/bin/python  --index-url https://download.pytorch.org/whl/nightly/cu128
+
+
+uv pip install torch==2.7.1 torchvision==0.22.1 --python /workspace/invokeai/.venv/bin/python --index-url https://download.pytorch.org/whl/cu128
+
 
 
 cd ../../..
