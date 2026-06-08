@@ -37,8 +37,8 @@ uv pip uninstall torch torchvision torchaudio --python /workspace/invokeai/.venv
 uv pip install torch==2.7.1 torchvision==0.22.1 --python /workspace/invokeai/.venv/bin/python --index-url https://download.pytorch.org/whl/cu128
 
 
-
-cd ../../..
-cp invokeai.yaml /workspace/invokeai/invokeai.yaml
+#copy default invokeai config (with multiuser set to true)
+#cd ../../..
+#cp invokeai.yaml /workspace/invokeai/invokeai.yaml
 
 
