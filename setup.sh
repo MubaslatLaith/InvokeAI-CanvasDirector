@@ -5,8 +5,9 @@ git config lfs.fetchinclude "*"
 git lfs pull
 
 cd .. 
-mv invokeai/ invokeai_existing/
-mkdir invokeai
+#mv invokeai/ invokeai_existing/
+#mkdir invokeai
+git clone https://github.com/MubaslatLaith/invokeai.git
 cd invokeai
 
 uv venv --relocatable --prompt invoke --python 3.12 --python-preference only-managed .venv
