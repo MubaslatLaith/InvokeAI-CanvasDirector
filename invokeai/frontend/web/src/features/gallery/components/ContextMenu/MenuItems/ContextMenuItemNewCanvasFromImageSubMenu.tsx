@@ -8,9 +8,23 @@ import { newCanvasFromImage } from 'features/imageActions/actions';
 import { toast } from 'features/toast/toast';
 import { navigationApi } from 'features/ui/layouts/navigation-api';
 import { WORKSPACE_PANEL_ID } from 'features/ui/layouts/shared';
-import { memo, useCallback } from 'react';
+//MOD
+//import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PiFileBold, PiPlusBold } from 'react-icons/pi';
+
+//MOD
+type InvokeDebugBridge = {
+  newCanvasWithRasterLayerFromImage?: () => Promise<void>;
+};
+
+declare global {
+  interface Window {
+    __invokeDebug?: InvokeDebugBridge;
+  }
+}
+//
 
 export const ContextMenuItemNewCanvasFromImageSubMenu = memo(() => {
   const { t } = useTranslation();
@@ -37,6 +51,15 @@ export const ContextMenuItemNewCanvasFromImageSubMenu = memo(() => {
       status: 'success',
     });
   }, [imageDTO, store, t]);
+
+  //MOD
+  useEffect(() => {
+    window.__invokeDebug = {
+      ...window.__invokeDebug,
+      newCanvasWithRasterLayerFromImage: onClickNewCanvasWithRasterLayerFromImage,
+    };
+  }, [onClickNewCanvasWithRasterLayerFromImage]);
+  //
 
   const onClickNewCanvasWithControlLayerFromImage = useCallback(async () => {
     const { dispatch, getState } = store;

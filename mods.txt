@@ -1,2 +1,2 @@
 InvokeAI/invokeai/frontend/web/src/features/controlLayers/hooks/useInvokeCanvas.ts
-
+InvokeAI/invokeai/frontend/web/src/features/gallery/components/ContextMenu/MenuItems/ContextMenuItemNewCanvasFromImageSubMenu.tsx

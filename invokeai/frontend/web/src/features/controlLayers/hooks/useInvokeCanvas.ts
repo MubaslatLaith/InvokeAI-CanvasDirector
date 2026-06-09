@@ -8,21 +8,33 @@ import Konva from 'konva';
 import { useLayoutEffect, useState } from 'react';
 import { $socket } from 'services/events/stores';
 import { useDevicePixelRatio } from 'use-device-pixel-ratio';
+
+//MOD imports
+import { useAppSelector } from 'app/store/storeHooks';
+import { selectLastSelectedItem } from 'features/gallery/store/gallerySelectors';
+import { useImageDTO } from 'services/api/endpoints/images';
+import type { CanvasEntityType } from 'features/controlLayers/store/types';
+import { createNewCanvasEntityFromImage } from 'features/imageActions/actions';
+//
+
 //MOD
+type CreateCanvasEntityFromImageType = CanvasEntityType | 'regional_guidance_with_reference_image';
+
 type InvokeBridge = {
-  addRasterLayer: () => void;
-  addInpaintMask: () => void;
-  getCanvasState: () => unknown;
-  getManagerRepr: () => unknown;
+	addRasterLayer: () => void;
+	addInpaintMask: () => void;
+	getCanvasState: () => unknown;
+	getManagerRepr: () => unknown;
+	createNewCanvasEntityFromSelectedImage: (type?: CreateCanvasEntityFromImageType) => Promise<void>;
 };
 
 declare global {
-  interface Window {
-    __invokeBridge?: InvokeBridge;
-  }
+	interface Window {
+		__invokeBridge?: InvokeBridge;
+	}
 }
-//
 
+//
 const log = logger('canvas');
 
 // This will log warnings when layers > 5
@@ -43,6 +55,10 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
   useKonvaPixelRatioWatcher();
   const store = useAppStore();
   const socket = useStore($socket);
+  //MOD
+  const lastSelectedItem = useAppSelector(selectLastSelectedItem);
+  const imageDTO = useImageDTO(lastSelectedItem);
+  //MOD
   const [container, containerRef] = useState<HTMLDivElement | null>(null);
 
   useLayoutEffect(() => {
@@ -68,11 +84,28 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
     manager.initialize();
 
     //MOD
+
     window.__invokeBridge = {
       addRasterLayer: () => manager.stateApi.addRasterLayer({ isSelected: true }),
       addInpaintMask: () => manager.stateApi.addInpaintMask({ isSelected: true }),
       getCanvasState: () => manager.stateApi.getCanvasState(),
       getManagerRepr: () => manager.repr(),
+      createNewCanvasEntityFromSelectedImage: async (type = 'raster_layer') => {
+        if (!imageDTO) {
+          console.warn('No selected image');
+          return;
+        }
+
+        const { dispatch, getState } = store;
+
+        await createNewCanvasEntityFromImage({
+          imageDTO,
+          type,
+          withResize: false,
+          dispatch,
+          getState,
+        });
+      },
     };
     //
 
