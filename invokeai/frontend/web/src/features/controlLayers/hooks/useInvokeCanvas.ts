@@ -8,6 +8,20 @@ import Konva from 'konva';
 import { useLayoutEffect, useState } from 'react';
 import { $socket } from 'services/events/stores';
 import { useDevicePixelRatio } from 'use-device-pixel-ratio';
+//MOD
+type InvokeBridge = {
+  addRasterLayer: () => void;
+  addInpaintMask: () => void;
+  getCanvasState: () => unknown;
+  getManagerRepr: () => unknown;
+};
+
+declare global {
+  interface Window {
+    __invokeBridge?: InvokeBridge;
+  }
+}
+//
 
 const log = logger('canvas');
 
@@ -53,8 +67,20 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
     const manager = new CanvasManager(container, store, socket);
     manager.initialize();
 
+    //MOD
+    window.__invokeBridge = {
+      addRasterLayer: () => manager.stateApi.addRasterLayer({ isSelected: true }),
+      addInpaintMask: () => manager.stateApi.addInpaintMask({ isSelected: true }),
+      getCanvasState: () => manager.stateApi.getCanvasState(),
+      getManagerRepr: () => manager.repr(),
+    };
+    //
+
     return () => {
       manager.destroy();
+      //mod
+      delete window.__invokeBridge;
+      //
       $canvasManager.set(null);
     };
   }, [container, socket, store]);
