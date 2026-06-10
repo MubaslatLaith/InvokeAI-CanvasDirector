@@ -8,8 +8,6 @@ import type { CanvasEntityType } from 'features/controlLayers/store/types';
 //MOD imports
 import { selectLastSelectedItem } from 'features/gallery/store/gallerySelectors';
 import { createNewCanvasEntityFromImage } from 'features/imageActions/actions';
-import { navigationApi } from 'features/ui/layouts/navigation-api';
-import { WORKSPACE_PANEL_ID } from 'features/ui/layouts/shared';
 import Konva from 'konva';
 import { useLayoutEffect, useState } from 'react';
 import { getImageDTOSafe } from 'services/api/endpoints/images';
@@ -112,7 +110,7 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
           return;
         }
 
-        await navigationApi.focusPanel('canvas', WORKSPACE_PANEL_ID);
+        //await navigationApi.focusPanel('canvas', WORKSPACE_PANEL_ID);
 
         await createNewCanvasEntityFromImage({
           imageDTO,
@@ -122,9 +120,9 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
           getState,
         });
 
-        requestAnimationFrame(() => {
-          manager.stage.fitBboxAndLayersToStage();
-        });
+        //requestAnimationFrame(() => {
+        //  manager.stage.fitBboxAndLayersToStage();
+        //});
       },
     };
     //
