@@ -1,37 +1,36 @@
 import { useStore } from '@nanostores/react';
 import { logger } from 'app/logging/logger';
-import { useAppStore } from 'app/store/storeHooks';
+import { useAppSelector, useAppStore } from 'app/store/storeHooks';
 import { useAssertSingleton } from 'common/hooks/useAssertSingleton';
 import { CanvasManager } from 'features/controlLayers/konva/CanvasManager';
 import { $canvasManager } from 'features/controlLayers/store/ephemeral';
+import type { CanvasEntityType } from 'features/controlLayers/store/types';
+//MOD imports
+import { selectLastSelectedItem } from 'features/gallery/store/gallerySelectors';
+import { createNewCanvasEntityFromImage } from 'features/imageActions/actions';
 import Konva from 'konva';
 import { useLayoutEffect, useState } from 'react';
+import { useImageDTO } from 'services/api/endpoints/images';
 import { $socket } from 'services/events/stores';
 import { useDevicePixelRatio } from 'use-device-pixel-ratio';
-
-//MOD imports
-import { useAppSelector } from 'app/store/storeHooks';
-import { selectLastSelectedItem } from 'features/gallery/store/gallerySelectors';
-import { useImageDTO } from 'services/api/endpoints/images';
-import type { CanvasEntityType } from 'features/controlLayers/store/types';
-import { createNewCanvasEntityFromImage } from 'features/imageActions/actions';
 //
 
 //MOD
+
 type CreateCanvasEntityFromImageType = CanvasEntityType | 'regional_guidance_with_reference_image';
 
 type InvokeBridge = {
-	addRasterLayer: () => void;
-	addInpaintMask: () => void;
-	getCanvasState: () => unknown;
-	getManagerRepr: () => unknown;
-	createNewCanvasEntityFromSelectedImage: (type?: CreateCanvasEntityFromImageType) => Promise<void>;
+  addRasterLayer: () => void;
+  addInpaintMask: () => void;
+  getCanvasState: () => unknown;
+  getManagerRepr: () => unknown;
+  createNewCanvasEntityFromSelectedImage: (type?: CreateCanvasEntityFromImageType) => Promise<void>;
 };
 
 declare global {
-	interface Window {
-		__invokeBridge?: InvokeBridge;
-	}
+  interface Window {
+    __invokeBridge?: InvokeBridge;
+  }
 }
 
 //
@@ -90,14 +89,11 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
       addInpaintMask: () => manager.stateApi.addInpaintMask({ isSelected: true }),
       getCanvasState: () => manager.stateApi.getCanvasState(),
       getManagerRepr: () => manager.repr(),
-      createNewCanvasEntityFromSelectedImage: async (type = 'raster_layer') => {
+      createNewCanvasEntityFromSelectedImage: async (type: CreateCanvasEntityFromImageType = 'raster_layer') => {
         if (!imageDTO) {
-          console.warn('No selected image');
           return;
         }
-
         const { dispatch, getState } = store;
-
         await createNewCanvasEntityFromImage({
           imageDTO,
           type,
@@ -116,7 +112,7 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
       //
       $canvasManager.set(null);
     };
-  }, [container, socket, store]);
+  }, [container, imageDTO, socket, store]);
 
   return containerRef;
 };
