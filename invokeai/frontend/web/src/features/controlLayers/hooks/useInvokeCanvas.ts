@@ -55,10 +55,6 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
   useKonvaPixelRatioWatcher();
   const store = useAppStore();
   const socket = useStore($socket);
-  //MOD
-  //const lastSelectedItem = useAppSelector(selectLastSelectedItem);
-  //const imageDTO = useImageDTO(lastSelectedItem);
-  //MOD
   const [container, containerRef] = useState<HTMLDivElement | null>(null);
 
   useLayoutEffect(() => {
@@ -95,8 +91,6 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
         return manager.id;
       },
       createNewCanvasEntityFromSelectedImage: async (type: CreateCanvasEntityFromImageType = 'raster_layer') => {
-        //console.log('[bridge] called, imageDTO =', imageDTO);
-        //log.warn('Start');
         const { dispatch, getState } = store;
         const selected = selectLastSelectedItem(getState());
         if (!selected) {
@@ -105,13 +99,8 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
         }
         const imageDTO = await getImageDTOSafe(selected);
         if (!imageDTO) {
-          //console.warn('[bridge] EARLY RETURN: imageDTO is', imageDTO);
-          //log.warn('No selected image');
           return;
         }
-
-        //await navigationApi.focusPanel('canvas', WORKSPACE_PANEL_ID);
-
         await createNewCanvasEntityFromImage({
           imageDTO,
           type,
@@ -119,10 +108,6 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
           dispatch,
           getState,
         });
-
-        //requestAnimationFrame(() => {
-        //  manager.stage.fitBboxAndLayersToStage();
-        //});
       },
     };
     //
