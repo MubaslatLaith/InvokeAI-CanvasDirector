@@ -13,6 +13,7 @@ import { useLayoutEffect, useState } from 'react';
 import { getImageDTOSafe } from 'services/api/endpoints/images';
 import { $socket } from 'services/events/stores';
 import { useDevicePixelRatio } from 'use-device-pixel-ratio';
+import { positivePromptChanged } from 'features/controlLayers/store/paramsSlice';
 //
 
 //MOD
@@ -20,11 +21,11 @@ import { useDevicePixelRatio } from 'use-device-pixel-ratio';
 type CreateCanvasEntityFromImageType = CanvasEntityType | 'regional_guidance_with_reference_image';
 
 type ParamsBridge = {
-	            get: () => unknown;
-		    setPositivePrompt: (prompt: string) => string;
-		    //setNegativePrompt: (prompt: string | null) => string | null;
-	            //setSteps: (steps: number) => number;
-		    ////setSeed: (seed: number) => number;
+	get: () => RootState['params'];
+	setPositivePrompt: (prompt: string) => string;
+	//setNegativePrompt: (prompt: string | null) => string | null;
+	//setSteps: (steps: number) => number;
+	//setSeed: (seed: number) => number;
 };
 
 
