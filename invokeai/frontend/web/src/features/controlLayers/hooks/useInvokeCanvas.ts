@@ -1,6 +1,6 @@
 import { useStore } from '@nanostores/react';
 import { logger } from 'app/logging/logger';
-import { useAppSelector, useAppStore } from 'app/store/storeHooks';
+import { useAppStore } from 'app/store/storeHooks';
 import { useAssertSingleton } from 'common/hooks/useAssertSingleton';
 import { CanvasManager } from 'features/controlLayers/konva/CanvasManager';
 import { $canvasManager } from 'features/controlLayers/store/ephemeral';
@@ -12,7 +12,7 @@ import { navigationApi } from 'features/ui/layouts/navigation-api';
 import { WORKSPACE_PANEL_ID } from 'features/ui/layouts/shared';
 import Konva from 'konva';
 import { useLayoutEffect, useState } from 'react';
-import { useImageDTO } from 'services/api/endpoints/images';
+import { getImageDTOSafe } from 'services/api/endpoints/images';
 import { $socket } from 'services/events/stores';
 import { useDevicePixelRatio } from 'use-device-pixel-ratio';
 //
@@ -58,8 +58,8 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
   const store = useAppStore();
   const socket = useStore($socket);
   //MOD
-  const lastSelectedItem = useAppSelector(selectLastSelectedItem);
-  const imageDTO = useImageDTO(lastSelectedItem);
+  //const lastSelectedItem = useAppSelector(selectLastSelectedItem);
+  //const imageDTO = useImageDTO(lastSelectedItem);
   //MOD
   const [container, containerRef] = useState<HTMLDivElement | null>(null);
 
@@ -99,13 +99,19 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
       createNewCanvasEntityFromSelectedImage: async (type: CreateCanvasEntityFromImageType = 'raster_layer') => {
         //console.log('[bridge] called, imageDTO =', imageDTO);
         //log.warn('Start');
+        const { dispatch, getState } = store;
+        const selected = selectLastSelectedItem(getState());
+        if (!selected) {
+          log.warn('[bridge] no gallery selection');
+          return;
+        }
+        const imageDTO = await getImageDTOSafe(selected);
         if (!imageDTO) {
           //console.warn('[bridge] EARLY RETURN: imageDTO is', imageDTO);
           //log.warn('No selected image');
           return;
         }
 
-        const { dispatch, getState } = store;
         await navigationApi.focusPanel('canvas', WORKSPACE_PANEL_ID);
 
         await createNewCanvasEntityFromImage({
@@ -130,7 +136,7 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
       //
       $canvasManager.set(null);
     };
-  }, [container, imageDTO, socket, store]);
+  }, [container, socket, store]);
 
   return containerRef;
 };
