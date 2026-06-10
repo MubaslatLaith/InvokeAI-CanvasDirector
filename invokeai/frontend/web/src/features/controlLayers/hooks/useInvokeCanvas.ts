@@ -19,6 +19,15 @@ import { useDevicePixelRatio } from 'use-device-pixel-ratio';
 
 type CreateCanvasEntityFromImageType = CanvasEntityType | 'regional_guidance_with_reference_image';
 
+type ParamsBridge = {
+	            get: () => unknown;
+		    setPositivePrompt: (prompt: string) => string;
+		    //setNegativePrompt: (prompt: string | null) => string | null;
+	            //setSteps: (steps: number) => number;
+		    ////setSeed: (seed: number) => number;
+};
+
+
 type InvokeBridge = {
   addRasterLayer: () => void;
   addInpaintMask: () => void;
@@ -26,6 +35,7 @@ type InvokeBridge = {
   getManagerRepr: () => unknown;
   getManagerId: () => string;
   createNewCanvasEntityFromSelectedImage: (type?: CreateCanvasEntityFromImageType) => Promise<void>;
+  params: ParamsBridge;
 };
 
 declare global {
@@ -80,8 +90,9 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
     manager.initialize();
 
     //MOD
-
+    //
     window.__invokeBridge = {
+
       addRasterLayer: () => manager.stateApi.addRasterLayer({ isSelected: true }),
       addInpaintMask: () => manager.stateApi.addInpaintMask({ isSelected: true }),
       getCanvasState: () => manager.stateApi.getCanvasState(),
@@ -109,6 +120,18 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
           getState,
         });
       },
+
+
+      params: {
+	      get: () => store.getState().params,
+
+	      setPositivePrompt: (prompt: string) => {
+		      store.dispatch(positivePromptChanged(prompt));
+		      return store.getState().params.positivePrompt;		      
+	      },
+      },
+
+
     };
     //
 
