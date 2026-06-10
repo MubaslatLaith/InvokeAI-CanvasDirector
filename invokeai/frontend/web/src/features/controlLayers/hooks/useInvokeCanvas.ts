@@ -1,9 +1,11 @@
 import { useStore } from '@nanostores/react';
 import { logger } from 'app/logging/logger';
+import type { RootState } from 'app/store/store';
 import { useAppStore } from 'app/store/storeHooks';
 import { useAssertSingleton } from 'common/hooks/useAssertSingleton';
 import { CanvasManager } from 'features/controlLayers/konva/CanvasManager';
 import { $canvasManager } from 'features/controlLayers/store/ephemeral';
+import { positivePromptChanged } from 'features/controlLayers/store/paramsSlice';
 import type { CanvasEntityType } from 'features/controlLayers/store/types';
 //MOD imports
 import { selectLastSelectedItem } from 'features/gallery/store/gallerySelectors';
@@ -13,7 +15,6 @@ import { useLayoutEffect, useState } from 'react';
 import { getImageDTOSafe } from 'services/api/endpoints/images';
 import { $socket } from 'services/events/stores';
 import { useDevicePixelRatio } from 'use-device-pixel-ratio';
-import { positivePromptChanged } from 'features/controlLayers/store/paramsSlice';
 //
 
 //MOD
@@ -21,13 +22,12 @@ import { positivePromptChanged } from 'features/controlLayers/store/paramsSlice'
 type CreateCanvasEntityFromImageType = CanvasEntityType | 'regional_guidance_with_reference_image';
 
 type ParamsBridge = {
-	get: () => RootState['params'];
-	setPositivePrompt: (prompt: string) => string;
-	//setNegativePrompt: (prompt: string | null) => string | null;
-	//setSteps: (steps: number) => number;
-	//setSeed: (seed: number) => number;
+  get: () => RootState['params'];
+  setPositivePrompt: (prompt: string) => string;
+  //setNegativePrompt: (prompt: string | null) => string | null;
+  //setSteps: (steps: number) => number;
+  //setSeed: (seed: number) => number;
 };
-
 
 type InvokeBridge = {
   addRasterLayer: () => void;
@@ -93,7 +93,6 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
     //MOD
     //
     window.__invokeBridge = {
-
       addRasterLayer: () => manager.stateApi.addRasterLayer({ isSelected: true }),
       addInpaintMask: () => manager.stateApi.addInpaintMask({ isSelected: true }),
       getCanvasState: () => manager.stateApi.getCanvasState(),
@@ -122,17 +121,14 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
         });
       },
 
-
       params: {
-	      get: () => store.getState().params,
+        get: () => store.getState().params,
 
-	      setPositivePrompt: (prompt: string) => {
-		      store.dispatch(positivePromptChanged(prompt));
-		      return store.getState().params.positivePrompt;		      
-	      },
+        setPositivePrompt: (prompt: string) => {
+          store.dispatch(positivePromptChanged(prompt));
+          return store.getState().params.positivePrompt;
+        },
       },
-
-
     };
     //
 
