@@ -8,6 +8,8 @@ import type { CanvasEntityType } from 'features/controlLayers/store/types';
 //MOD imports
 import { selectLastSelectedItem } from 'features/gallery/store/gallerySelectors';
 import { createNewCanvasEntityFromImage } from 'features/imageActions/actions';
+import { navigationApi } from 'features/ui/layouts/navigation-api';
+import { WORKSPACE_PANEL_ID } from 'features/ui/layouts/shared';
 import Konva from 'konva';
 import { useLayoutEffect, useState } from 'react';
 import { useImageDTO } from 'services/api/endpoints/images';
@@ -24,6 +26,7 @@ type InvokeBridge = {
   addInpaintMask: () => void;
   getCanvasState: () => unknown;
   getManagerRepr: () => unknown;
+  getManagerId: () => string;
   createNewCanvasEntityFromSelectedImage: (type?: CreateCanvasEntityFromImageType) => Promise<void>;
 };
 
@@ -61,10 +64,10 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
   const [container, containerRef] = useState<HTMLDivElement | null>(null);
 
   useLayoutEffect(() => {
-    log.debug('Initializing renderer');
+    //log.debug('Initializing renderer');
     if (!container) {
       // Nothing to clean up
-      log.debug('No stage container, skipping initialization');
+      //log.debug('No stage container, skipping initialization');
       return () => {};
     }
 
@@ -89,17 +92,32 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
       addInpaintMask: () => manager.stateApi.addInpaintMask({ isSelected: true }),
       getCanvasState: () => manager.stateApi.getCanvasState(),
       getManagerRepr: () => manager.repr(),
+      getManagerId: () => {
+        log.warn(`BRIDGE MANAGER ID ${manager.id}`);
+        return manager.id;
+      },
       createNewCanvasEntityFromSelectedImage: async (type: CreateCanvasEntityFromImageType = 'raster_layer') => {
+        //console.log('[bridge] called, imageDTO =', imageDTO);
+        //log.warn('Start');
         if (!imageDTO) {
+          //console.warn('[bridge] EARLY RETURN: imageDTO is', imageDTO);
+          //log.warn('No selected image');
           return;
         }
+
         const { dispatch, getState } = store;
+        await navigationApi.focusPanel('canvas', WORKSPACE_PANEL_ID);
+
         await createNewCanvasEntityFromImage({
           imageDTO,
           type,
           withResize: false,
           dispatch,
           getState,
+        });
+
+        requestAnimationFrame(() => {
+          manager.stage.fitBboxAndLayersToStage();
         });
       },
     };
