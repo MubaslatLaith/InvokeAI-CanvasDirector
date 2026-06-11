@@ -1,7 +1,7 @@
 import { logger } from 'app/logging/logger';
 import type { AppStore } from 'app/store/store';
 import type { CanvasManager } from 'features/controlLayers/konva/CanvasManager';
-import { positivePromptChanged } from 'features/controlLayers/store/paramsSlice';
+import { positivePromptChanged, setSteps } from 'features/controlLayers/store/paramsSlice';
 import { selectLastSelectedItem } from 'features/gallery/store/gallerySelectors';
 import { createNewCanvasEntityFromImage } from 'features/imageActions/actions';
 import { getImageDTOSafe } from 'services/api/endpoints/images';
@@ -34,6 +34,9 @@ const createParamsBridge = (manager: CanvasManager, store: AppStore): ParamsBrid
   setPositivePrompt: (prompt: string) => {
     store.dispatch(positivePromptChanged(prompt));
     return store.getState().params.positivePrompt;
+  },
+  setSteps: async (steps: number) => {
+    await store.dispatch(setSteps(steps));
   },
 });
 

@@ -6,6 +6,7 @@ export type CreateCanvasEntityFromImageType = CanvasEntityType | 'regional_guida
 export type ParamsBridge = {
   get: () => RootState['params'];
   setPositivePrompt: (prompt: string) => string;
+  setSteps: (steps: number) => Promise<void>;
 };
 
 export type ImageBridge = {
