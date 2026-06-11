@@ -8,8 +8,6 @@ import { getImageDTOSafe } from 'features/gallery/util/getImageDTOSafe';
 import { createNewCanvasEntityFromImage } from 'features/imageActions/actions';
 import { logger } from 'app/logging/logger';
 
-import { createParamsBridge } from './createParamsBridge';
-import type { InvokeBridge } from './types';
 
 const log = logger('invoke-bridge');
 
