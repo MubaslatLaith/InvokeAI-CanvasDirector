@@ -4,12 +4,12 @@ import type { CreateCanvasEntityFromImageType, ImageBridge, InvokeBridge, Params
 
 import { positivePromptChanged } from 'features/controlLayers/store/paramsSlice';
 import { selectLastSelectedItem } from 'features/gallery/store/gallerySelectors';
-import { getImageDTOSafe } from 'features/gallery/util/getImageDTOSafe';
+import { getImageDTOSafe } from 'services/api/endpoints/images';
 import { createNewCanvasEntityFromImage } from 'features/imageActions/actions';
 import { logger } from 'app/logging/logger';
 
 
-const log = logger('invoke-bridge');
+const log = logger('canvas');
 
 export const createImageBridge = (
 	manager: CanvasManager,

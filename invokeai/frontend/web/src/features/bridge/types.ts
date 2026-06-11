@@ -1,7 +1,7 @@
 import type { CanvasEntityType } from 'features/controlLayers/store/types';
 import type { RootState } from 'app/store/store';
 
-type CreateCanvasEntityFromImageType = CanvasEntityType | 'regional_guidance_with_reference_image';
+export type CreateCanvasEntityFromImageType = CanvasEntityType | 'regional_guidance_with_reference_image';
 
 
 export type ParamsBridge = {
