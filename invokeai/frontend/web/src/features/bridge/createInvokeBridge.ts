@@ -11,7 +11,12 @@ import { logger } from 'app/logging/logger';
 import { createParamsBridge } from './createParamsBridge';
 import type { InvokeBridge } from './types';
 
-export const createImageBridge = (manager, store) => ({
+const log = logger('invoke-bridge');
+
+export const createImageBridge = (
+	manager: CanvasManager,
+	store: AppStore
+): ImageBridge => ({
 	createNewCanvasEntityFromSelectedImage: async (type: CreateCanvasEntityFromImageType = 'raster_layer') => { 
 		const { dispatch, getState } = store;
 		const selected = selectLastSelectedItem(getState());
@@ -27,7 +32,11 @@ export const createImageBridge = (manager, store) => ({
 
 });
 
-export const createParamsBridge = (manager, store) => ({
+
+export const createParamsBridge = (
+	        manager: CanvasManager,
+		        store: AppStore
+): ParamsBridge => ({
 	get: () => store.getState().params,
 	setPositivePrompt: (prompt: string) => {
 		store.dispatch(positivePromptChanged(prompt));
