@@ -35,8 +35,8 @@ export const createParamsBridge = (manager, store) => ({
 export const createInvokeBridge = (
 	manager: CanvasManager, 
 	store: AppStore): InvokeBridge => ({
-		image: createImageBridge(store),
-		params: createParamsBridge(store), 
+		image: createImageBridge(manager, store),
+		params: createParamsBridge(manager, store), 
 	}); 
 
 
