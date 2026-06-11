@@ -1,22 +1,15 @@
 import { useStore } from '@nanostores/react';
 import { logger } from 'app/logging/logger';
-import type { RootState } from 'app/store/store';
 import { useAppStore } from 'app/store/storeHooks';
 import { useAssertSingleton } from 'common/hooks/useAssertSingleton';
+import { createInvokeBridge } from 'features/bridge/createInvokeBridge';
+import { installInvokeBridge } from 'features/bridge/installInvokeBridge';
 import { CanvasManager } from 'features/controlLayers/konva/CanvasManager';
 import { $canvasManager } from 'features/controlLayers/store/ephemeral';
-import { positivePromptChanged } from 'features/controlLayers/store/paramsSlice';
-import type { CanvasEntityType } from 'features/controlLayers/store/types';
-import { selectLastSelectedItem } from 'features/gallery/store/gallerySelectors';
-import { createNewCanvasEntityFromImage } from 'features/imageActions/actions';
 import Konva from 'konva';
 import { useLayoutEffect, useState } from 'react';
-import { getImageDTOSafe } from 'services/api/endpoints/images';
 import { $socket } from 'services/events/stores';
 import { useDevicePixelRatio } from 'use-device-pixel-ratio';
-import { installInvokeBridge } from 'features/bridge/installInvokeBridge';
-import { createInvokeBridge } from 'features/bridge/createInvokeBridge';
-
 
 const log = logger('canvas');
 
@@ -62,7 +55,6 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
     const manager = new CanvasManager(container, store, socket);
     manager.initialize();
     installInvokeBridge(createInvokeBridge(manager, store));
-
 
     return () => {
       manager.destroy();

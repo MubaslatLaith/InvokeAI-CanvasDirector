@@ -1,9 +1,9 @@
 import type { InvokeBridge } from './types';
 
 export const installInvokeBridge = (bridge: InvokeBridge) => {
-	window.__invokeBridge = bridge;
+  window.__invokeBridge = bridge;
 };
 
-export const uninstallInvokeBridge = () => {
-	delete window.__invokeBridge;
-};
+//export const uninstallInvokeBridge = () => {
+//  delete window.__invokeBridge;
+//};
