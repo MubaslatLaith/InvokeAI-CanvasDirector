@@ -1,5 +1,16 @@
 import type { AppStore } from 'app/store/store';
 import type { CanvasManager } from 'features/controlLayers/konva/CanvasManager';
+import type { CreateCanvasEntityFromImageType, ImageBridge, InvokeBridge, ParamsBridge } from './types';
+import type { CreateCanvasEntityFromImageType } from 'features/controlLayers/store/types';
+
+import { positivePromptChanged } from 'features/controlLayers/store/paramsSlice';
+import { selectLastSelectedItem } from 'features/gallery/store/gallerySelectors';
+import { getImageDTOSafe } from 'features/gallery/util/getImageDTOSafe';
+import { createNewCanvasEntityFromImage } from 'features/imageActions/actions';
+import { logger } from 'app/logging/logger';
+
+import type { AppStore } from 'app/store/store';
+import type { CanvasManager } from 'features/controlLayers/konva/CanvasManager';
 import { createParamsBridge } from './createParamsBridge';
 import type { InvokeBridge } from './types';
 
