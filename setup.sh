@@ -20,9 +20,9 @@ uv pip install -e ".[dev,test,docs]"   --python /workspace/invokeai/.venv/bin/py
 
 
 npm install -g pnpm
-#cd ./invokeai/frontend/web
-#pnpm i
-#pnpm build
+cd ./invokeai/frontend/web
+pnpm i
+pnpm build
 
 
 sudo apt update && sudo apt install screen
