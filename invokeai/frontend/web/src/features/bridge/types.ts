@@ -4,10 +4,10 @@ import type { CanvasEntityType } from 'features/controlLayers/store/types';
 export type CreateCanvasEntityFromImageType = CanvasEntityType | 'regional_guidance_with_reference_image';
 
 export type StagingAreaBridge = {
-	acceptSelected: () => void; 
-
+  acceptSelected: () => void;
+  canAcceptSelected: () => boolean;
+  getSelected: () => unknown;
 };
-
 
 export type QueueBridge = {
   invoke: () => void;
@@ -29,5 +29,5 @@ export type InvokeBridge = {
   image: ImageBridge;
   params: ParamsBridge;
   queue: QueueBridge;
-  stagingArea: StagingAreaBridge; 
+  stagingArea: StagingAreaBridge;
 };

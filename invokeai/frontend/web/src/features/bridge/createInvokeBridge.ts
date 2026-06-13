@@ -6,17 +6,28 @@ import { selectLastSelectedItem } from 'features/gallery/store/gallerySelectors'
 import { createNewCanvasEntityFromImage } from 'features/imageActions/actions';
 import { getImageDTOSafe } from 'services/api/endpoints/images';
 
-import type { CreateCanvasEntityFromImageType, StaginAreaBridge, ImageBridge, InvokeBridge, ParamsBridge, QueueBridge } from './types';
+import type {
+  CreateCanvasEntityFromImageType,
+  ImageBridge,
+  InvokeBridge,
+  ParamsBridge,
+  QueueBridge,
+  StagingAreaBridge,
+} from './types';
 
 const log = logger('canvas');
 
-
 const createStagingAreaBridge = (): StagingAreaBridge => ({
-	acceptSelected: () => {
-	throw new Error('[bridge] staginarea bridge not installed');
-	},
-
-}); 
+  acceptSelected: () => {
+    throw new Error('[bridge] staginarea bridge not installed');
+  },
+  canAcceptSelected: () => {
+    throw new Error('[bridge] staginarea bridge not installed');
+  },
+  getSelected: () => {
+    throw new Error('[bridge] staginarea bridge not installed');
+  },
+});
 
 const createQueueBridge = (): QueueBridge => ({
   invoke: () => {
@@ -68,5 +79,5 @@ export const createInvokeBridge = (
   image: createImageBridge(manager, store),
   params: createParamsBridge(manager, store),
   queue: createQueueBridge(),
-  stagingArea: createStagingAreaBridge(), 
+  stagingArea: createStagingAreaBridge(),
 });

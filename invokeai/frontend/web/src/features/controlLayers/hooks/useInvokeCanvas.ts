@@ -4,6 +4,7 @@ import { useAppStore } from 'app/store/storeHooks';
 import { useAssertSingleton } from 'common/hooks/useAssertSingleton';
 import { createInvokeBridge } from 'features/bridge/createInvokeBridge';
 import { installInvokeBridge } from 'features/bridge/installInvokeBridge';
+import { useStagingAreaContext } from 'features/controlLayers/components/StagingArea/context';
 import { CanvasManager } from 'features/controlLayers/konva/CanvasManager';
 import { $canvasManager } from 'features/controlLayers/store/ephemeral';
 import { useInvoke } from 'features/queue/hooks/useInvoke';
@@ -11,8 +12,6 @@ import Konva from 'konva';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { $socket } from 'services/events/stores';
 import { useDevicePixelRatio } from 'use-device-pixel-ratio';
-import { useStagingAreaContext } from 'features/controlLayers/components/StagingArea/context';
-
 
 const log = logger('canvas');
 
@@ -36,7 +35,6 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
   //add hooks
   const queue = useInvoke();
   const stagingArea = useStagingAreaContext();
-
 
   const store = useAppStore();
   const socket = useStore($socket);
@@ -83,15 +81,14 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
     bridge.queue.isDisabled = () => queue.isDisabled;
   }, [queue.enqueueBack, queue.isLoading, queue.isDisabled]);
 
-
   useEffect(() => {
-	  const bridge = window.__invokeBridge; 
-	  if (!bridge) {
-		  return;
-	  }
-	
-	  bridge.stagingArea.acceptSelected = stagingArea.acceptSelected; 
-
-  }, [stagingArea.acceptSelected] 
+    const bridge = window.__invokeBridge;
+    if (!bridge) {
+      return;
+    }
+    bridge.stagingArea.canAcceptSelected = () => stagingArea.$acceptSelectedIsEnabled.get();
+    bridge.stagingArea.getSelected = () => stagingArea.$selectedItem.get();
+    bridge.stagingArea.acceptSelected = stagingArea.acceptSelected;
+  }, [stagingArea]);
   return containerRef;
 };
