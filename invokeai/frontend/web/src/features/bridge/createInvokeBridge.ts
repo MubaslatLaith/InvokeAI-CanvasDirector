@@ -14,6 +14,12 @@ const createQueueBridge = (): QueueBridge => ({
   invoke: () => {
     throw new Error('[bridge] queue bridge not installed');
   },
+  isLoading: () => {
+    throw new Error('[bridge] queue bridge not installed');
+  },
+  isDisabled: () => {
+    throw new Error('[bridge] queue bridge not installed');
+  },
 });
 
 const createImageBridge = (manager: CanvasManager, store: AppStore): ImageBridge => ({

@@ -75,6 +75,8 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
     }
 
     bridge.queue.invoke = queue.enqueueBack;
-  }, [queue.enqueueBack]);
+    bridge.queue.isLoading = () => queue.isLoading;
+    bridge.queue.isDisabled = () => queue.isDisabled;
+  }, [queue.enqueueBack, queue.isLoading, queue.isDisabled]);
   return containerRef;
 };

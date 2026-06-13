@@ -5,7 +5,8 @@ export type CreateCanvasEntityFromImageType = CanvasEntityType | 'regional_guida
 
 export type QueueBridge = {
   invoke: () => void;
-
+  isLoading: () => boolean;
+  isDisabled: () => boolean;
 };
 
 export type ParamsBridge = {
