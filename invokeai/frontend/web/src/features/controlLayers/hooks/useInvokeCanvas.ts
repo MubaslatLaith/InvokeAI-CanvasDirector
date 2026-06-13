@@ -10,6 +10,7 @@ import Konva from 'konva';
 import { useLayoutEffect, useState } from 'react';
 import { $socket } from 'services/events/stores';
 import { useDevicePixelRatio } from 'use-device-pixel-ratio';
+import { useInvoke } from 'features/queue/hooks/useInvoke';
 
 const log = logger('canvas');
 
@@ -29,6 +30,10 @@ const useKonvaPixelRatioWatcher = () => {
 export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
   useAssertSingleton('useInvokeCanvas');
   useKonvaPixelRatioWatcher();
+
+  //add hooks 
+  const queue = useInvoke();
+
   const store = useAppStore();
   const socket = useStore($socket);
   const [container, containerRef] = useState<HTMLDivElement | null>(null);
@@ -54,7 +59,7 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
 
     const manager = new CanvasManager(container, store, socket);
     manager.initialize();
-    installInvokeBridge(createInvokeBridge(manager, store));
+    installInvokeBridge(createInvokeBridge(manager, store, queue));
 
     return () => {
       manager.destroy();

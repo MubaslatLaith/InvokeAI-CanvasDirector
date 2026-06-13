@@ -5,10 +5,16 @@ import { positivePromptChanged, setSteps } from 'features/controlLayers/store/pa
 import { selectLastSelectedItem } from 'features/gallery/store/gallerySelectors';
 import { createNewCanvasEntityFromImage } from 'features/imageActions/actions';
 import { getImageDTOSafe } from 'services/api/endpoints/images';
+import { useInvoke } from 'features/queue/hooks/useInvoke';
 
 import type { CreateCanvasEntityFromImageType, ImageBridge, InvokeBridge, ParamsBridge } from './types';
 
 const log = logger('canvas');
+
+const createQueueBridge = (manager: CanvasManager, store: AppStore, queue: ReturnType<typeof useInvoke>): QueueBridge => ({
+	invoke: queue.enqueueBack,
+});
+
 
 const createImageBridge = (manager: CanvasManager, store: AppStore): ImageBridge => ({
   createNewCanvasEntityFromSelectedImage: async (type: CreateCanvasEntityFromImageType = 'raster_layer') => {
@@ -40,7 +46,8 @@ const createParamsBridge = (manager: CanvasManager, store: AppStore): ParamsBrid
   },
 });
 
-export const createInvokeBridge = (manager: CanvasManager, store: AppStore): InvokeBridge => ({
+export const createInvokeBridge = (manager: CanvasManager, store: AppStore, queue: ReturnType<typeof useInvoke>): InvokeBridge => ({
   image: createImageBridge(manager, store),
   params: createParamsBridge(manager, store),
+  queue: createQueueBridge(manager, store, queue), 
 });
