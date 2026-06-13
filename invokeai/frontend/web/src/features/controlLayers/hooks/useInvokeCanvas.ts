@@ -11,6 +11,8 @@ import Konva from 'konva';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { $socket } from 'services/events/stores';
 import { useDevicePixelRatio } from 'use-device-pixel-ratio';
+import { useStagingAreaContext } from 'features/controlLayers/components/StagingArea/context';
+
 
 const log = logger('canvas');
 
@@ -33,6 +35,8 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
 
   //add hooks
   const queue = useInvoke();
+  const stagingArea = useStagingAreaContext();
+
 
   const store = useAppStore();
   const socket = useStore($socket);
@@ -78,5 +82,16 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
     bridge.queue.isLoading = () => queue.isLoading;
     bridge.queue.isDisabled = () => queue.isDisabled;
   }, [queue.enqueueBack, queue.isLoading, queue.isDisabled]);
+
+
+  useEffect(() => {
+	  const bridge = window.__invokeBridge; 
+	  if (!bridge) {
+		  return;
+	  }
+	
+	  bridge.stagingArea.acceptSelected = stagingArea.acceptSelected; 
+
+  }, [stagingArea.acceptSelected] 
   return containerRef;
 };
