@@ -6,11 +6,11 @@ import { createInvokeBridge } from 'features/bridge/createInvokeBridge';
 import { installInvokeBridge } from 'features/bridge/installInvokeBridge';
 import { CanvasManager } from 'features/controlLayers/konva/CanvasManager';
 import { $canvasManager } from 'features/controlLayers/store/ephemeral';
+import { useInvoke } from 'features/queue/hooks/useInvoke';
 import Konva from 'konva';
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { $socket } from 'services/events/stores';
 import { useDevicePixelRatio } from 'use-device-pixel-ratio';
-import { useInvoke } from 'features/queue/hooks/useInvoke';
 
 const log = logger('canvas');
 
@@ -31,7 +31,7 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
   useAssertSingleton('useInvokeCanvas');
   useKonvaPixelRatioWatcher();
 
-  //add hooks 
+  //add hooks
   const queue = useInvoke();
 
   const store = useAppStore();
@@ -59,7 +59,7 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
 
     const manager = new CanvasManager(container, store, socket);
     manager.initialize();
-    installInvokeBridge(createInvokeBridge(manager, store, queue));
+    installInvokeBridge(createInvokeBridge(manager, store));
 
     return () => {
       manager.destroy();
@@ -67,5 +67,14 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
     };
   }, [container, socket, store]);
 
+  useEffect(() => {
+    const bridge = window.__invokeBridge;
+
+    if (!bridge) {
+      return;
+    }
+
+    bridge.queue.invoke = queue.enqueueBack;
+  }, [queue.enqueueBack]);
   return containerRef;
 };

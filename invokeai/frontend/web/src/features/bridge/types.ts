@@ -4,8 +4,9 @@ import type { CanvasEntityType } from 'features/controlLayers/store/types';
 export type CreateCanvasEntityFromImageType = CanvasEntityType | 'regional_guidance_with_reference_image';
 
 export type QueueBridge = {
-	invoke: () => void;
-}
+  invoke: () => void;
+
+};
 
 export type ParamsBridge = {
   get: () => RootState['params'];
@@ -20,4 +21,5 @@ export type ImageBridge = {
 export type InvokeBridge = {
   image: ImageBridge;
   params: ParamsBridge;
+  queue: QueueBridge;
 };
