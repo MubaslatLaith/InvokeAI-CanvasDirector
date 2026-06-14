@@ -1,6 +1,7 @@
 import { logger } from 'app/logging/logger';
 import type { AppStore } from 'app/store/store';
 import type { CanvasManager } from 'features/controlLayers/konva/CanvasManager';
+import { canvasReset } from 'features/controlLayers/store/actions';
 import { positivePromptChanged, setSteps } from 'features/controlLayers/store/paramsSlice';
 import { selectLastSelectedItem } from 'features/gallery/store/gallerySelectors';
 import { createNewCanvasEntityFromImage } from 'features/imageActions/actions';
@@ -45,6 +46,9 @@ const createQueueBridge = (): QueueBridge => ({
 });
 
 const createImageBridge = (manager: CanvasManager, store: AppStore): ImageBridge => ({
+  resetCanvas: () => {
+    store.dispatch(canvasReset());
+  },
   createNewCanvasEntityFromSelectedImage: async (type: CreateCanvasEntityFromImageType = 'raster_layer') => {
     const { dispatch, getState } = store;
     const selected = selectLastSelectedItem(getState());
@@ -53,12 +57,23 @@ const createImageBridge = (manager: CanvasManager, store: AppStore): ImageBridge
       return;
     }
     const imageDTO = await getImageDTOSafe(selected);
-
     if (!imageDTO) {
       log.warn('[bridge] selected gallery item has no image DTO');
       return;
     }
+    await createNewCanvasEntityFromImage({ imageDTO, type, withResize: false, dispatch, getState });
+  },
 
+  createNewCanvasEntityFromImageName: async (
+    imageName: string,
+    type: CreateCanvasEntityFromImageType = 'raster_layer'
+  ) => {
+    const { dispatch, getState } = store;
+    const imageDTO = await getImageDTOSafe(imageName);
+    if (!imageDTO) {
+      log.warn(`[bridge] image has no image DTO: ${imageName}`);
+      return;
+    }
     await createNewCanvasEntityFromImage({ imageDTO, type, withResize: false, dispatch, getState });
   },
 });

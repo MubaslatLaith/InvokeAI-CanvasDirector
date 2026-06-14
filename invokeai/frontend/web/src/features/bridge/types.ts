@@ -24,6 +24,8 @@ export type ParamsBridge = {
 
 export type ImageBridge = {
   createNewCanvasEntityFromSelectedImage: (type?: CreateCanvasEntityFromImageType) => Promise<void>;
+  createNewCanvasEntityFromImageName: (imageName: string, type?: CreateCanvasEntityFromImageType) => Promise<void>;
+  resetCanvas: () => void;
 };
 
 export type InvokeBridge = {
