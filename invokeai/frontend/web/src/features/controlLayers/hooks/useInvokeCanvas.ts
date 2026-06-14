@@ -79,16 +79,10 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
     bridge.queue.invoke = queue.enqueueBack;
     bridge.queue.isLoading = () => queue.isLoading;
     bridge.queue.isDisabled = () => queue.isDisabled;
-  }, [queue.enqueueBack, queue.isLoading, queue.isDisabled]);
 
-  useEffect(() => {
-    const bridge = window.__invokeBridge;
-    if (!bridge) {
-      return;
-    }
     bridge.stagingArea.canAcceptSelected = () => stagingArea.$acceptSelectedIsEnabled.get();
     bridge.stagingArea.getSelected = () => stagingArea.$selectedItem.get();
     bridge.stagingArea.acceptSelected = stagingArea.acceptSelected;
-  }, [stagingArea]);
+  }, [stagingArea, queue.enqueueBack, queue.isLoading, queue.isDisabled]);
   return containerRef;
 };
