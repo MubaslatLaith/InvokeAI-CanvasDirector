@@ -27,6 +27,9 @@ const createStagingAreaBridge = (): StagingAreaBridge => ({
   getSelected: () => {
     throw new Error('[bridge] staginarea bridge not installed');
   },
+  saveSelectedToGallery: () => {
+    throw new Error('[bridge] stagingArea bridge not installed');
+  },
 });
 
 const createQueueBridge = (): QueueBridge => ({

@@ -7,6 +7,7 @@ export type StagingAreaBridge = {
   acceptSelected: () => void;
   canAcceptSelected: () => boolean;
   getSelected: () => unknown;
+  saveSelectedToGallery: (boardId?: string) => Promise<void>;
 };
 
 export type QueueBridge = {
