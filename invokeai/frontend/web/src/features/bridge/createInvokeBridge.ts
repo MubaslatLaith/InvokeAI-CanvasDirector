@@ -1,8 +1,11 @@
 import { logger } from 'app/logging/logger';
 import type { AppStore } from 'app/store/store';
+import { getDefaultRefImageConfig } from 'features/controlLayers/hooks/addLayerHooks';
 import type { CanvasManager } from 'features/controlLayers/konva/CanvasManager';
 import { canvasReset } from 'features/controlLayers/store/actions';
-import { positivePromptChanged, setSteps } from 'features/controlLayers/store/paramsSlice';
+import { paramsReset, positivePromptChanged, setSteps } from 'features/controlLayers/store/paramsSlice';
+import { refImageAdded } from 'features/controlLayers/store/refImagesSlice';
+import { imageDTOToCroppableImage } from 'features/controlLayers/store/util';
 import { selectLastSelectedItem } from 'features/gallery/store/gallerySelectors';
 import { createNewCanvasEntityFromImage } from 'features/imageActions/actions';
 import { getImageDTOSafe } from 'services/api/endpoints/images';
@@ -46,6 +49,22 @@ const createQueueBridge = (): QueueBridge => ({
 });
 
 const createImageBridge = (manager: CanvasManager, store: AppStore): ImageBridge => ({
+  createGlobalReferenceImageFromImageName: async (imageName: string) => {
+    const { dispatch, getState } = store;
+    const imageDTO = await getImageDTOSafe(imageName);
+    if (!imageDTO) {
+      log.warn(`[bridge] image '${imageName}' has no image DTO`);
+      return;
+    }
+    const config = getDefaultRefImageConfig(getState);
+    config.image = imageDTOToCroppableImage(imageDTO);
+    dispatch(
+      refImageAdded({
+        overrides: { config },
+      })
+    );
+  },
+
   resetCanvas: () => {
     store.dispatch(canvasReset());
   },
@@ -86,6 +105,9 @@ const createParamsBridge = (manager: CanvasManager, store: AppStore): ParamsBrid
   },
   setSteps: async (steps: number) => {
     await store.dispatch(setSteps(steps));
+  },
+  resetGenerationSettings: () => {
+    store.dispatch(paramsReset());
   },
 });
 

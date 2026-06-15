@@ -20,12 +20,14 @@ export type ParamsBridge = {
   get: () => RootState['params'];
   setPositivePrompt: (prompt: string) => string;
   setSteps: (steps: number) => Promise<void>;
+  resetGenerationSettings: () => void;
 };
 
 export type ImageBridge = {
   createNewCanvasEntityFromSelectedImage: (type?: CreateCanvasEntityFromImageType) => Promise<void>;
   createNewCanvasEntityFromImageName: (imageName: string, type?: CreateCanvasEntityFromImageType) => Promise<void>;
   resetCanvas: () => void;
+  createGlobalReferenceImageFromImageName: (imageName: string) => Promise<void>;
 };
 
 export type InvokeBridge = {
