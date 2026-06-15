@@ -7,6 +7,7 @@ export type StagingAreaBridge = {
   acceptSelected: () => void;
   canAcceptSelected: () => boolean;
   getSelected: () => unknown;
+  discardAll: () => void;
   saveSelectedToGallery: (boardId?: string) => Promise<void>;
 };
 
@@ -28,6 +29,7 @@ export type ImageBridge = {
   createNewCanvasEntityFromImageName: (imageName: string, type?: CreateCanvasEntityFromImageType) => Promise<void>;
   resetCanvas: () => void;
   createGlobalReferenceImageFromImageName: (imageName: string) => Promise<void>;
+  deleteAllGlobalReferenceImages: () => void;
 };
 
 export type InvokeBridge = {

@@ -83,6 +83,7 @@ export const useInvokeCanvas = (): ((el: HTMLDivElement | null) => void) => {
     bridge.queue.isLoading = () => queue.isLoading;
     bridge.queue.isDisabled = () => queue.isDisabled;
 
+    bridge.stagingArea.discardAll = () => stagingArea.discardAll();
     bridge.stagingArea.canAcceptSelected = () => stagingArea.$acceptSelectedIsEnabled.get();
     bridge.stagingArea.getSelected = () => stagingArea.$selectedItem.get();
     bridge.stagingArea.acceptSelected = stagingArea.acceptSelected;

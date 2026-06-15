@@ -4,7 +4,7 @@ import { getDefaultRefImageConfig } from 'features/controlLayers/hooks/addLayerH
 import type { CanvasManager } from 'features/controlLayers/konva/CanvasManager';
 import { canvasReset } from 'features/controlLayers/store/actions';
 import { paramsReset, positivePromptChanged, setSteps } from 'features/controlLayers/store/paramsSlice';
-import { refImageAdded } from 'features/controlLayers/store/refImagesSlice';
+import { refImageAdded, refImageDeleted, selectRefImageEntityIds } from 'features/controlLayers/store/refImagesSlice';
 import { imageDTOToCroppableImage } from 'features/controlLayers/store/util';
 import { selectLastSelectedItem } from 'features/gallery/store/gallerySelectors';
 import { createNewCanvasEntityFromImage } from 'features/imageActions/actions';
@@ -32,6 +32,9 @@ const createStagingAreaBridge = (): StagingAreaBridge => ({
     throw new Error('[bridge] staginarea bridge not installed');
   },
   saveSelectedToGallery: () => {
+    throw new Error('[bridge] stagingArea bridge not installed');
+  },
+  discardAll: () => {
     throw new Error('[bridge] stagingArea bridge not installed');
   },
 });
@@ -94,6 +97,12 @@ const createImageBridge = (manager: CanvasManager, store: AppStore): ImageBridge
       return;
     }
     await createNewCanvasEntityFromImage({ imageDTO, type, withResize: false, dispatch, getState });
+  },
+  deleteAllGlobalReferenceImages: () => {
+    const { dispatch, getState } = store;
+    for (const id of selectRefImageEntityIds(getState())) {
+      dispatch(refImageDeleted({ id }));
+    }
   },
 });
 
